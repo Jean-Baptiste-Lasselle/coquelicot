@@ -11,6 +11,46 @@
 # Reprise
 
 
+### Gitlab 
+
+J'ai examiné le contenu du conteneur gitlab, et ai constaté, que si j'utilise la valeur `http://gitlab.marguerite.io:8083/` pour configurer la variable GITLAB_OMNIBUS `external_url`, lors, dans le conteneur gitlab : 
+
+```bash
+[jibl@pc-100 coquelicot]$ # docker exec -it marguerite_gitlab_service bash -c 'apt-get update -y && apt-get install -y netools'
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c 'netstat -tulpn'
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 127.0.0.1:9100          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9229          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9168          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:8080          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:8082          0.0.0.0:*               LISTEN      -               
+tcp        0      0 0.0.0.0:8083            0.0.0.0:*               LISTEN      1056/nginx      
+tcp        0      0 127.0.0.1:9236          0.0.0.0:*               LISTEN      -               
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      39/sshd         
+tcp        0      0 0.0.0.0:8060            0.0.0.0:*               LISTEN      1056/nginx      
+tcp        0      0 127.0.0.11:39772        0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9121          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9090          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9187          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9093          0.0.0.0:*               LISTEN      -               
+tcp6       0      0 :::22                   :::*                    LISTEN      39/sshd         
+tcp6       0      0 :::9094                 :::*                    LISTEN      -               
+udp        0      0 127.0.0.11:36555        0.0.0.0:*                           -               
+udp6       0      0 :::9094                 :::*                                -               
+[jibl@pc-100 coquelicot]$ 
+```
+Que vois-t-on?
+* Que Gitlab distribue son logiciel avec un reverse proxy installé à l'intéreiur du conteneur.
+* Que l'instance serveur Gitlab elle-même, dans le conteneur, écoutes sur le port `8080`, qui doit donc être une valeur par défaut, indépendante de l' `external_url`.
+* Que le serveur NGINX, dans le conteneur, écoutes le port `8083` (le numéro de port spécifié avec l' `external_url`), sur l'interface réseau par défaut, i.e. `0.0.0.0`.
+* Il faut donc que mon `./docker-compose.yml` mapppe le port `8083` !!! 
+* Le serveur NGINX est donc là dans Gitlab pour changer le port découtes avec le NGINX au lieu du Gitlab. Et probablement pour la configuration HTTPS SSL / TLS v1.2 .
+
+D'où ma nouvelle configuration `./docker-compose.yml`, qui fait usage d'une seule et même variable pour les numéro de port interne et externe, do conteneur docker gitlab.
+
+Ils ont un truc bizarre derrière, chez Gitlab, avec ce NGINX compris dans le conteneur
+
 ### Jenkins
 
 #### Provision initiale : pb installation plugins
