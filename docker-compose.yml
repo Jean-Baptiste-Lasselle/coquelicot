@@ -45,7 +45,7 @@ services:
 #         gitlab_rails['lfs_enabled'] = true
     ports:
       # 0.0.0.0 : 8083 : 8080 
-      - ${GITLAB_HTTP_IP}:${GITLAB_HTTP_PORT}:8080
+      - ${GITLAB_HTTP_IP}:${GITLAB_HTTP_PORT}:${GITLAB_HTTP_PORT}
       - ${GITLAB_HTTPS_IP}:${GITLAB_HTTPS_PORT}:443
       - ${GITLAB_SSH_IP}:${GITLAB_SSH_PORT}:22
     volumes:
