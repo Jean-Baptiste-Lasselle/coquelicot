@@ -49,7 +49,7 @@ services:
       # si cette variable d'envirionnement n'est pas déclarée, alors on a des erreurs 404 avec certaines fonctionnalités, qui font donc usage de cette variable d'environnement, pour trouver le "CI server" de Gitlab, par exemple ...
       # - GITLAB_HOST=$HOTE_RESEAU_GITLAB
       # - GITLAB_OMNIBUS_CONFIG="external_url 'http://$HOTE_RESEAU_GITLAB:$GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB/'; gitlab_rails['lfs_enabled'] = true"
-      - GITLAB_OMNIBUS_CONFIG="external_url 'http://gitab.marguerite.io:8085/'; gitlab_rails['lfs_enabled'] = true"
+      - GITLAB_OMNIBUS_CONFIG="external_url 'http://gitab.marguerite.io:8085/'; gitlab_rails['lfs_enabled'] = true; nginx['listen_port'] = $GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB"
 #     environment:
 #       GITLAB_OMNIBUS_CONFIG: |
 #         external_url 'http://gitlab.marguerite.io:$GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX/'
