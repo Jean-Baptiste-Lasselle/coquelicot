@@ -281,7 +281,7 @@ services:
       # + le prochain palier de remontée du plongueur, cf. HEALTHCHECK rocketchat
       - rocketchat
   nginx:
-    image: nginx
+    image: $VERSION_IMAGE_NGINX
 #     hostname: "proxy"
     container_name: "reverseproxy"
     restart: always
@@ -298,10 +298,9 @@ services:
       - "7443:3443"
       - "3322:322"
     expose:
-      - "3000"
-      - "80"
-      - "443"
-#      - "22"
+      - "8070"
+      - "3443"
+      - "322"
     environment:
 #       - NGINX_HOST=marguerite.io
 #       - GIT_HOST=gitlab.marguerite.io
@@ -309,9 +308,7 @@ services:
       - NGINX_PORT=8070
       - NGINX_SSL=3443
       - NGINX_SSH=322
-#     links:
-#       - rocketchat:rocketchat
-#       - marguerite_gitlab:marguerite_gitlab
+
     networks:
       - "$NOM_DU_RESEAU_INFRA_DOCKER"
 #       devops:
