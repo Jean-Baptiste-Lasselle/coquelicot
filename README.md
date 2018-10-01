@@ -10,6 +10,9 @@
 
 # Reprise
 
+Bon, en létat, il y a 2 faits  :
+
+* premier fait : si je change juste le numéro de port dans le proxypass déclaré dans `./nginx/chatops.conf` pour Gitlab, queje le change de `8085` à la valeur `80`, eh bien tout fonctionne correctement avec Gitlab. Comment configure-t-on le numéro de prot d'écoute du NGINX, je n'(en ai aucune idée, à moinsque j'ai un problème d'interpolation de varibles dans mon `./docker-compose.yml`. 
 
 ### Gitlab 
 
