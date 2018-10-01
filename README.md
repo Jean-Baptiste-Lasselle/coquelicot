@@ -56,10 +56,13 @@ Ok, je vais tester un dernière possibilité : la condition à tester, est :
 * Le numéro de port mentionné par la variable d'environnement `GITLAB_OMNIBUS_CONFIG`, 
 doivent être égaux. Cependant, rien, dans le principe, n'oblige à imposer l'égaliteé de numéro de ports, entre les ports internes et externes mappés pour le conteneur Gitlab.
 
-Je vais donc déclarer dans le fichier `./.env` une nouvelle variable d'environnement `GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX`, et je pourrai utiliser une configuration du type :
+Je vais donc déclarer dans le fichier `./.env` 2 nouvelles variables d'environnement, pour utiliser une configuration du type :
 ```yaml
-GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX=8083
-GITLAB_HTTP_PORT=8084
+GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB=8083
+# le numéro de port utilisé pour la configuration du reverse proxy coquelicot, et pour le port externe du conteneur docker Gitlab (cf. ./docker-compose.yml, section 'ports:')
+GITLAB_HTTP_PORT_DEPUIS_EXTERIEUR_CONTENEUR_DOCKER=8084
+# GITLAB_HTTP_PORT est une variable attendue, par le conteneur Docker distribué par Gitlab. Sa vlauer doit être : 
+# GITLAB_HTTP_PORT=$GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB
 ```
 Et dans la configuration du reverse proxy NGINX de cette recette (pas le NGINX dans le conteneur Gitlab), je mentionnerai `GITLAB_HTTP_PORT`, mais pas `GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX` .
 
