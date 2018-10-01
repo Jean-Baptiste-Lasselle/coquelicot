@@ -818,22 +818,24 @@ https://www.chatbots.org/chatbot/a.l.i.c.e/
 Pour exécuter cette recette une première fois : 
 
 ```bash
-export PROVISIONING_HOME=$(pwd)/coquelicot
-mkdir -p $PROVISIONING_HOME
-cd $PROVISIONING_HOME
+export PROVISIONING_HOME=$HOME/coquelicot 
+docker-compse down 
+cd $HOME 
+sudo rm -rf $PROVISIONING_HOME 
+mkdir -p $PROVISIONING_HOME 
+cd $PROVISIONING_HOME 
 git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . 
-chmod +x ./operations.sh
-./operations.sh
+chmod +x ./operations.sh && ./operations.sh
 ```
 Soit, en une seule ligne : 
 
 ```bash
-export PROVISIONING_HOME=$(pwd)/coquelicot && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations.sh && ./operations.sh
+export PROVISIONING_HOME=$HOME/coquelicot && docker-compse down && cd $HOME && sudo rm -rf $PROVISIONING_HOME && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations.sh && ./operations.sh
 ```
 Toujours en une seule ligne, mais en mode verbeux : 
 
 ```bash
-export PROVISIONING_HOME=$(pwd)/coquelicot && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations-verbose.sh && ./operations-verbose.sh
+export PROVISIONING_HOME=$HOME/coquelicot && docker-compse down && cd $HOME && sudo rm -rf $PROVISIONING_HOME && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations-verbose.sh && ./operations-verbose.sh
 ```
 
 À la fin de l'exécution de cette recette, il faut encore : 
