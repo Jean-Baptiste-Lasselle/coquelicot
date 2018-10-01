@@ -55,10 +55,10 @@ services:
       - ${GITLAB_HTTP_IP}:${GITLAB_HTTP_PORT_DEPUIS_EXTERIEUR_CONTENEUR_DOCKER}:${GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB}
       - ${GITLAB_HTTPS_IP}:${GITLAB_HTTPS_PORT}:443
       - ${GITLAB_SSH_IP}:${GITLAB_SSH_PORT}:22
-    expose:
-      - ${GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX}
-      - 443
-      - 22
+ #    expose:
+ #      - ${GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX}
+ #      - 443
+ #      - 22
     volumes:
       - ./gitlab/config:/etc/gitlab
       - ./gitlab/logs:/var/log/gitlab
