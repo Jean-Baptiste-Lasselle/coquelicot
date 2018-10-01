@@ -47,9 +47,23 @@ Que vois-t-on?
 * Il faut donc que mon `./docker-compose.yml` mapppe le port `8083` !!! 
 * Le serveur NGINX est donc là dans Gitlab pour changer le port découtes avec le NGINX au lieu du Gitlab. Et probablement pour la configuration HTTPS SSL / TLS v1.2 .
 
-D'où ma nouvelle configuration `./docker-compose.yml`, qui fait usage d'une seule et même variable pour les numéro de port interne et externe, do conteneur docker gitlab.
+D'où ma nouvelle configuration `./docker-compose.yml`, qui fait usage d'une seule et même variable pour les numéro de port interne et externe, du conteneur docker gitlab.
 
 Ils ont un truc bizarre derrière, chez Gitlab, avec ce NGINX compris dans le conteneur
+
+Ok, je vais tester un dernière possibilité : la condition à tester, est :
+* Le numéro de port interne au conteneur Docker Gitlab, celui déclaré dans la section `ports:` du fichier `./docker-compose.yml`, et
+* Le numéro de port mentionné par la variable d'environnement `GITLAB_OMNIBUS_CONFIG`, 
+doivent être égaux. Cependant, rien, dans le principe, n'oblige à imposer l'égaliteé de numéro de ports, entre les ports internes et externes mappés pour le conteneur Gitlab.
+
+Je vais donc déclarer dans le fichier `./.env` une nouvelle variable d'environnement `GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX`, et je pourrai utiliser une configuration du type :
+```yaml
+GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX=8083
+GITLAB_HTTP_PORT=8084
+```
+Et dans la configuration du reverse proxy NGINX de cette recette (pas le NGINX dans le conteneur Gitlab), je mentionnerai `GITLAB_HTTP_PORT`, mais pas `GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX` .
+
+La question subsitera de déterminer s'il serait intéressant de sortir ce nginx du conteneur, pour n'avoir "qu'une seule couche de NGINX". Pour moi, la réponse est oui, si et seulement si la docuementation officielle Gitlab indique une installation de Gitlab, hors docker, qui ne fasse pas usage d'un reverse proxy NGINX :"Es-ce que Gitlab peut fonctionner sans NGINX?". Je pense que Gitlab ne fonctionne pas raisonnablement sans NGINX, sinon il faudrait une modification majeure de code source, et c'esyt même ce qui a motivé l'équipe pour le choix de recourir à NGINX, pour intégrer les différents composants Gitlab.
 
 ### Jenkins
 
