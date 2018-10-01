@@ -36,6 +36,7 @@ services:
     container_name: "$NOM_CONTENEUR_GITLAB"
     hostname: "gitlab.marguerite.io"
     environment:
+      - GITLAB_HOST: $GITLAB_HOST
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://gitlab.marguerite.io:$GITLAB_HTTP_PORT_THROUGH_INTERNAL_NGINX/'
         gitlab_rails['lfs_enabled'] = true
