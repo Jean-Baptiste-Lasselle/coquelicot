@@ -37,8 +37,12 @@ services:
     hostname: "gitlab.marguerite.io"
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://gitlab.marguerite.io:8083/'
+        external_url 'http://gitlab.marguerite.io:8090/'
         gitlab_rails['lfs_enabled'] = true
+#     environment:
+#       GITLAB_OMNIBUS_CONFIG: |
+#         external_url 'http://gitlab.marguerite.io:8083/'
+#         gitlab_rails['lfs_enabled'] = true
     ports:
       # 0.0.0.0 : 8081 : 80 
       - ${GITLAB_HTTP_IP}:${GITLAB_HTTP_PORT}:80
