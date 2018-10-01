@@ -65,6 +65,14 @@ Et dans la configuration du reverse proxy NGINX de cette recette (pas le NGINX d
 
 La question subsitera de déterminer s'il serait intéressant de sortir ce nginx du conteneur, pour n'avoir "qu'une seule couche de NGINX". Pour moi, la réponse est oui, si et seulement si la docuementation officielle Gitlab indique une installation de Gitlab, hors docker, qui ne fasse pas usage d'un reverse proxy NGINX :"Es-ce que Gitlab peut fonctionner sans NGINX?". Je pense que Gitlab ne fonctionne pas raisonnablement sans NGINX, sinon il faudrait une modification majeure de code source, et c'esyt même ce qui a motivé l'équipe pour le choix de recourir à NGINX, pour intégrer les différents composants Gitlab.
 
+
+#### Encore de la configuration Gitlab: `GITLAB_HOST`
+
+Cette variable d'environnement est utilisée par certaines fonctionnalités Gitlab, qui lèvent une exception, lorsque la varibla d'environnement n'estpas définie.
+
+Voici une fonctionnalité que j'ai testée, et qui tombe, en l'absence de définition de la variable `GITLAB_HOST` : 
+
+![Fonctionnalité de reporting sur les stats CI/CD Gitlab](https://github.com/Jean-Baptiste-Lasselle/coquelicot/raw/master/documentation/images/erreur-gitlab-absence-definition-gitlab_host.png)
 ### Jenkins
 
 #### Provision initiale : pb installation plugins
