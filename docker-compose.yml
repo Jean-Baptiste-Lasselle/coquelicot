@@ -193,7 +193,7 @@ services:
       - ADMIN_PASS=$MDP_UTILISATEUR_ADMIN_INITIAL
       - ADMIN_EMAIL=$EMAIL_UTILISATEUR_ADMIN_INITIAL
     ports:
-      - 3000:3000
+      - 3030:3000
     expose:
       - "3000"
     depends_on:
