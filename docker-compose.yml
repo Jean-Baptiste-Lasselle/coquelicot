@@ -282,10 +282,12 @@ services:
     container_name: "reverseproxy"
     restart: always
     volumes:
-      - ./nginx/chatops.conf:/etc/nginx/conf.d/chatops.conf:rw
+      - ./nginx/:/etc/nginx/conf.d/:rw
+      # - ./nginx/chatops.conf:/etc/nginx/conf.d/:rw
+      # - ./nginx/jenkins.conf:/etc/nginx/conf.d/:rw
 #       - ./nginx/hosts:/etc/hosts
       - ./nginx/logs:/var/log/nginx:rw
-#      - ./nginx/certificates:/etc/nginx/certificates/:rw
+#      - ./nginx/certificates:/etc/nginx/certificates/
       - ./nginx/jenkins.conf:/etc/nginx/conf.d/
     ports:
       - "8090:80"
