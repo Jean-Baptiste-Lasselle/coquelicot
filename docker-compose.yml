@@ -77,7 +77,7 @@ services:
     restart: always
     container_name: gitlab_runner
     environment:
-      - CI_SERVER_URL=https://${GITLAB_HOST}/
+      - CI_SERVER_URL=https://${HOTE_RESEAU_GITLAB}/
     volumes:
       - ./gitlab/runner:/etc/gitlab-runner:rw
       - /var/run/docker.sock:/var/run/docker.sock:rw
