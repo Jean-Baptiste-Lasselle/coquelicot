@@ -292,7 +292,6 @@ services:
 #       - ./nginx/hosts:/etc/hosts
       - ./nginx/logs:/var/log/nginx:rw
 #      - ./nginx/certificates:/etc/nginx/certificates/
-      - ./nginx/jenkins.conf:/etc/nginx/conf.d/
     ports:
       - "8090:8070"
       - "7443:3443"
