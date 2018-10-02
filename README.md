@@ -27,6 +27,11 @@ export NOM_CONTENEUR_GITLAB=marguerite_gitlab_service
 docker exec -it $NOM_CONTENEUR_GITLAB bash -c "apt-get update -y &&  apt-get install -y net-tools && netstat -tulpn"
 ```
 
+Au final, avc cette histoire de numéros de ports, je dois templatiser avec ansible et Jinja 2 les fichiers : 
+* `./nginx/chatops.conf` (d'ailleurs `./nginx/chatops.conf` devra être scindé en deux `./nginx/gitlab.conf` et `./nginx/rocketchat.conf`)
+* `./gitlab/config/gitlab.rb`
+<!-- * `ccc` -->
+
 
 ### Gitlab 
 
