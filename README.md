@@ -12,7 +12,21 @@
 
 Bon, en létat, il y a 2 faits  :
 
-* premier fait : si je change juste le numéro de port dans le proxypass déclaré dans `./nginx/chatops.conf` pour Gitlab, queje le change de `8085` à la valeur `80`, eh bien tout fonctionne correctement avec Gitlab. Comment configure-t-on le numéro de prot d'écoute du NGINX, je n'(en ai aucune idée, à moinsque j'ai un problème d'interpolation de varibles dans mon `./docker-compose.yml`. 
+* premier fait : si je change juste le numéro de port dans le proxypass déclaré dans `./nginx/chatops.conf` pour Gitlab, que je le change de `8085` à la valeur `80`, eh bien tout fonctionne correctement avec Gitlab. Comment configure-t-on le numéro de prot d'écoute du NGINX, je n'(en ai aucune idée, à moinsque j'ai un problème d'interpolation de varibles dans mon `./docker-compose.yml`. 
+* second fait : j'ai beau tout essayer, les "pré-"configurations OMNIBUS ne focntionnent en aucun cas, j'ai donc eut recours au fichier `gitlab.rb`, 
+
+J'ai donc ajouté un fichier `./gitlab/config/gitlab.rb` qui permet de pré-configurer, sans avoir recours à OMNIBUS dans le `./docker-compose.yml` :+1: 
+* l'`external_url`, 
+* du numéro de port d'écoute NGINX, dans le conteneur Gitlab
+* Et bientôt : du numéro de port d'écoute du serveur SSH :  celui-ci sera accessible directement en tapeant sur le conteneur, le SSH ne passera pas par le reverse proxy NGINX (cela est-il possible?). Il s'agira du canal réseau qui sera utilisé par les développeurs pour réaliser les commit && push avec leur clé SSH avjoutée à leur compte utilisateur Gitlab
+
+On peut vérifier ces numéros de portà l'aide de  : 
+
+```bash
+export NOM_CONTENEUR_GITLAB=marguerite_gitlab_service
+docker exec -it $NOM_CONTENEUR_GITLAB bash -c "apt-get update -y &&  apt-get install -y net-tools && netstat -tulpn"
+```
+
 
 ### Gitlab 
 
