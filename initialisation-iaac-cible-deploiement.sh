@@ -10,8 +10,8 @@ export ID_IMAGE_MONGO=$(cat ./.env|grep VERSION_IMAGE_MONGO | awk -F = '{print $
 
 # VERSION_IMAGE_GITLAB_CE=gitlab/gitlab-ce:latest
 # export ID_IMAGE_GITLAB_CE=$(cat ./.env|grep VERSION_IMAGE_GITLAB_CE | awk -F = '{print $2}')
-export ID_IMAGE_GITLAB_CE=$(cat ./.env|grep GITLAB_CE_VERSION | awk -F = '{print $2}')
-export ID_IMAGE_GITLAB_CE="gitlab/gitlab-ce:$ID_IMAGE_GITLAB_CE"
+export CETTE_GITLAB_CE_VERSION=$(cat ./.env|grep GITLAB_CE_VERSION | awk -F = '{print $2}')
+export ID_IMAGE_GITLAB_CE="gitlab/gitlab-ce:$CETTE_GITLAB_CE_VERSION"
 
 # VERSION_IMAGE_GITLAB_RUNNER=gitlab/gitlab-runner:latest
 # export ID_IMAGE_GITLAB_RUNNER=$(cat ./.env|grep VERSION_IMAGE_GITLAB_RUNNER | awk -F = '{print $2}')
