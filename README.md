@@ -10,24 +10,98 @@
 
 # Reprise
 
-Bon, en létat, il y a 2 faits  :
+En l'état :
 
 * premier fait : si je change juste le numéro de port dans le proxypass déclaré dans `./nginx/chatops.conf` pour Gitlab, que je le change de `8085` à la valeur `80`, eh bien tout fonctionne correctement avec Gitlab. Comment configure-t-on le numéro de prot d'écoute du NGINX, je n'(en ai aucune idée, à moinsque j'ai un problème d'interpolation de varibles dans mon `./docker-compose.yml`. 
 * second fait : j'ai beau tout essayer, les "pré-"configurations OMNIBUS ne focntionnent en aucun cas, j'ai donc eut recours au fichier `gitlab.rb`, 
 
 J'ai donc ajouté un fichier `./gitlab/config/gitlab.rb` qui permet de pré-configurer, sans avoir recours à OMNIBUS dans le `./docker-compose.yml` :+1: 
 * l'`external_url`, 
-* du numéro de port d'écoute NGINX, dans le conteneur Gitlab
-* Et bientôt : du numéro de port d'écoute du serveur SSH :  celui-ci sera accessible directement en tapeant sur le conteneur, le SSH ne passera pas par le reverse proxy NGINX (cela est-il possible?). Il s'agira du canal réseau qui sera utilisé par les développeurs pour réaliser les commit && push avec leur clé SSH avjoutée à leur compte utilisateur Gitlab
+* le numéro de port d'écoute NGINX, dans le conteneur Gitlab
+* Et bientôt : du numéro de port d'écoute du serveur SSH :  celui-ci sera accessible directement en tapant sur le conteneur, le SSH ne passera pas par le reverse proxy NGINX (cela est-il possible?). Il s'agira du canal réseau qui sera utilisé par les développeurs pour réaliser les commit && push avec leur clé SSH avjoutée à leur compte utilisateur Gitlab
 
-On peut vérifier ces numéros de portà l'aide de  : 
+On peut vérifier ces numéros de port à l'aide de  : 
 
 ```bash
 export NOM_CONTENEUR_GITLAB=marguerite_gitlab_service
 docker exec -it $NOM_CONTENEUR_GITLAB bash -c "apt-get update -y &&  apt-get install -y net-tools && netstat -tulpn"
 ```
+Quelques détails de la structure interne du conteneur : 
+* Il y a un "Redis exporter", et un "PostGreSQL exporter"
+* L'application serveur Gitlab elle-même écoute sur le prot 8080, quelque soit la valeur de `external_url` 
+* le numéro de port spéicifié dans `external_url` permet de définir le numéro de port découte NGINX, pour le processus réalisant le "reverse-proxying" NGINX de l'application Gitlab (port 8085 dans l'exemple ci-dessous)
 
-Au final, avc cette histoire de numéros de ports, je dois templatiser avec ansible et Jinja 2 les fichiers : 
+```bash
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c " netstat -tulpn"
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:8060            0.0.0.0:*               LISTEN      1044/nginx      
+tcp        0      0 127.0.0.11:45887        0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9121          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9090          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9187          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9093          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9100          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9229          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9168          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:8080          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:8082          0.0.0.0:*               LISTEN      -               
+tcp        0      0 127.0.0.1:9236          0.0.0.0:*               LISTEN      -               
+tcp        0      0 0.0.0.0:8085            0.0.0.0:*               LISTEN      1044/nginx      
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      39/sshd         
+tcp6       0      0 :::9094                 :::*                    LISTEN      -               
+tcp6       0      0 :::22                   :::*                    LISTEN      39/sshd         
+udp        0      0 127.0.0.11:41409        0.0.0.0:*                           -               
+udp6       0      0 :::9094                 :::*                                -               
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:8080/"
+
+<html><body>You are being 
+[jibl@pc-100 coquelicot]$ 
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:8080/"
+<html><body>You are being <a href="http://localhost:8080/users/sign_in">redirected</a>.</body></html>[jibl@pc-100 coquelicot]$ 
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:8082/"
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:9229/"
+404 page not found
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:9187/"
+<html>
+	<head><title>Postgres exporter</title></head>
+	<body>
+	<h1>Postgres exporter</h1>
+	<p><a href='/metrics'>Metrics</a></p>
+	</body>
+	</html>
+	[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:9090/"
+<a href="/graph">Found</a>.
+
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:45887/"
+curl: (7) Failed to connect to localhost port 45887: Connection refused
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:8060/"
+<html>
+<head><title>404 Not Found</title></head>
+<body bgcolor="white">
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.12.1</center>
+</body>
+</html>
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://localhost:8085/"
+<html><body>You are being <a href="http://localhost:8085/users/sign_in">redirected</a>.</body></html>[jibl@pc-100 coquelicot]$ 
+[jibl@pc-100 coquelicot]$ docker exec -it marguerite_gitlab_service bash -c "curl http://127.0.0.1:9121/"
+
+<html>
+<head><title>Redis Exporter v0.20.2</title></head>
+<body>
+<h1>Redis Exporter 0.20.2</h1>
+<p><a href='/metrics'>Metrics</a></p>
+</body>
+</html>
+						[jibl@pc-100 coquelicot]$ 
+[jibl@pc-100 coquelicot]$ 
+
+```
+
+
+
+Au final, avec cette histoire de numéros de ports, je dois templatiser avec ansible et Jinja 2 les fichiers : 
 * `./nginx/chatops.conf` (d'ailleurs `./nginx/chatops.conf` devra être scindé en deux `./nginx/gitlab.conf` et `./nginx/rocketchat.conf`)
 * `./gitlab/config/gitlab.rb`
 <!-- * `ccc` -->
