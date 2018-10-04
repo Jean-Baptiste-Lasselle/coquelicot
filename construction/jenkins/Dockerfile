@@ -22,6 +22,7 @@ USER jenkins
 ENV JAVA_OPTS="-Xmx8192m"
 # L'option [--handlerCountStartup=NombreEntierPositif ] a été dépréciée.
 ENV JENKINS_OPTS="--handlerCountMax=300 --prefix=/var/jenkins_home"
+ENV JENKINS_HOME=/var/jenkins_home
 
 
 RUN /usr/local/bin/install-plugins.sh git:2.6.0
