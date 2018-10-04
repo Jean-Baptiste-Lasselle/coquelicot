@@ -1,5 +1,7 @@
 FROM jenkins/jenkins:lts
-MAINTAINER me
+# FROM ${VERSION_IMAGE_JENKINS}
+
+MAINTAINER Jean-Baptiste Lasselle @ Kytes
 
 USER root
 
