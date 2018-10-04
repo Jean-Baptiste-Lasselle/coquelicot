@@ -35,6 +35,12 @@ services:
     restart: always
     container_name: "$NOM_CONTENEUR_GITLAB"
     hostname: "$HOTE_RESEAU_GITLAB"
+    build: 
+      context: ./gitlab/
+#       args:
+        # - HEALTHCHECK BUILD ENV. => devrait être dans un conteneur Père, dont celui ci hérite, avec les BUILD ARGS déjà fixés.
+        # Les variables globales de nom identique, sont définies dans le fichier ".env", propre à Docker Compose
+        # - UTILISATEUR_ROCKETCHAT_HUBOT=$UTILISATEUR_ROCKETCHAT_HUBOT
     environment:
       - TZ=${TZ}
       # Ces varibles sont utilisées par les fonctionnalités développées par léquipe Gitlab 
