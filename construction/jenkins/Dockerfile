@@ -1,5 +1,5 @@
-# FROM jenkins/jenkins:lts
-FROM jenkins/jenkins:$VERSION_IMAGE_JENKINS
+FROM jenkins/jenkins:lts
+# FROM jenkins/jenkins:$VERSION_IMAGE_JENKINS
 
 MAINTAINER Jean-Baptiste Lasselle @ Kytes
 
