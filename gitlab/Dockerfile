@@ -1,4 +1,4 @@
-FROM gitlab/gitlab-ce:${GITLAB_CE_VERSION}
+FROM gitlab/gitlab-ce:${VERSION_IMAGE_GITLAB_CE}
 # FROM $VERSION_IMAGE_GITLAB_CE
 
 # USER root
