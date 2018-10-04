@@ -28,7 +28,7 @@ export ID_IMAG_HUBOT_ROCKETCHAT=$(cat ./.env|grep VERSION_IMAGE_HUBOT_ROCKETCHAT
 export ID_IMAG_HUBOT_NGINX=$(cat ./.env|grep VERSION_IMAGE_NGINX | awk -F = '{print $2}')
 
 
-export VERSION_IMAGE_NGINX=$(cat ./.env|grep VERSION_IMAGE_JENKINS | awk -F = '{print $2}')
+export ID_IMAGE_JENKINS=$(cat ./.env|grep VERSION_IMAGE_JENKINS | awk -F = '{print $2}')
 
 echo "   "
 echo "   "
