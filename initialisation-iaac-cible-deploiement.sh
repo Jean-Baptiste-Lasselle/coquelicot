@@ -49,6 +49,8 @@ echo "    ID_IMAG_HUBOT_ROCKETCHAT=$ID_IMAG_HUBOT_ROCKETCHAT "
 echo "  -------------------------------------------  "
 echo "    ID_IMAG_HUBOT_NGINX=$ID_IMAG_HUBOT_NGINX "
 echo "  -------------------------------------------  "
+echo "    ID_IMAGE_JENKINS=$ID_IMAGE_JENKINS "
+echo "  -------------------------------------------  "
 echo "   "
 echo "   "
 
