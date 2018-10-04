@@ -68,8 +68,8 @@ services:
       - 443
       - 22
     volumes:
-      # + utilisation du fichier de préconfiguration `./gitlab/config/gitlab.rb`
-      - ./gitlab/config:/etc/gitlab:rw
+      # + utilisation du fichier de préconfiguration `./gitlab/config/gitlab.rb` // j'ia un problème de droits avec ce répertoire, je vais être obligé de recourir au dockerfile
+      # - ./gitlab/config:/etc/gitlab:rw
       - ./gitlab/logs:/var/log/gitlab
       - ./gitlab/data:/var/opt/gitlab
     depends_on:
