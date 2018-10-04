@@ -9,7 +9,7 @@ USER root
 
 RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
 
-RUN apt-get update \
+RUN apt-get update -y \
       && apt-get install -y sudo \
       && apt-get install -y vim \
       && rm -rf /var/lib/apt/lists/*
