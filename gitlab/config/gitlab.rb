@@ -11,7 +11,7 @@
 ##! For more details on configuring external_url see:
 ##! https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab
 # external_url 'GENERATED_EXTERNAL_URL'
-external_url http://gitlab.marguerite.io:8085/
+external_url 'http://gitlab.marguerite.io:8085/'
 
 ## Roles for multi-instance GitLab
 ##! The default is to have no roles enabled, which results in GitLab running as an all-in-one instance.
