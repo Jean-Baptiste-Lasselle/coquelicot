@@ -31,7 +31,7 @@ services:
   # Pour la conf gitlab + runner + postgres + rredis => cf [https://github.com/mgcrea/docker-compose-gitlab-ce], many
   # thanks to Olivier ;) https://github.com/mgcrea
   gitlab:
-    image: gitlab/gitlab-ce:${GITLAB_CE_VERSION}
+    image: coquelicot/gitlab-ce:${GITLAB_CE_VERSION}
     restart: always
     container_name: "$NOM_CONTENEUR_GITLAB"
     hostname: "$HOTE_RESEAU_GITLAB"
