@@ -40,7 +40,7 @@ services:
 #       args:
         # - HEALTHCHECK BUILD ENV. => devrait être dans un conteneur Père, dont celui ci hérite, avec les BUILD ARGS déjà fixés.
         # Les variables globales de nom identique, sont définies dans le fichier ".env", propre à Docker Compose
-        # - UTILISATEUR_ROCKETCHAT_HUBOT=$UTILISATEUR_ROCKETCHAT_HUBOT
+        - VERSION_IMAGE_GITLAB_CE=$GITLAB_CE_VERSION
     environment:
       - TZ=${TZ}
       # Ces varibles sont utilisées par les fonctionnalités développées par léquipe Gitlab 
