@@ -1,5 +1,6 @@
-FROM gitlab/gitlab-ce:${VERSION_IMAGE_GITLAB_CE}
+# FROM gitlab/gitlab-ce:${VERSION_IMAGE_GITLAB_CE}
 # FROM $VERSION_IMAGE_GITLAB_CE
+FROM gitlab/gitlab-ce:11.2.1-ce.0
 
 # USER root
 
