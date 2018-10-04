@@ -3,6 +3,8 @@ FROM jenkins/jenkins:$VERSION_IMAGE_JENKINS
 
 MAINTAINER Jean-Baptiste Lasselle @ Kytes
 
+ARG VERSION_IMAGE_JENKINS
+
 USER root
 
 RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
