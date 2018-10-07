@@ -933,7 +933,7 @@ Toujours en une seule ligne, mais en mode verbeux :
 export PROVISIONING_HOME=$HOME/coquelicot && docker-compose down && cd $HOME && sudo rm -rf $PROVISIONING_HOME && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations-verbose.sh && ./operations-verbose.sh
 ```
 
-### Puis l'instruction idemtpotente
+### Les exécutions suivantes: une instruction idemtpotente
 
 ```bash
 export PROVISIONING_HOME=$HOME/coquelicot 
@@ -956,7 +956,7 @@ Toujours en une seule ligne, mais en mode verbeux :
 export PROVISIONING_HOME=$HOME/coquelicot && docker-compose down && cd $HOME && sudo rm -rf $PROVISIONING_HOME && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations-verbose.sh && ./operations-verbose.sh
 ```
 
-### À la fin de l'exécution de cette recette, pour lier hubot et rocketchat
+### À la fin de l'exécution de cette recette, pour lier hubot et rocketchat (reste à automatiser)
 
 Que vous ayez exécuté cette recette pour la première fois, ou qu'il s'agisse d'une des exécutions idempotentes suivantes, une fois l'exécution terminée, il faut encore ( [dixit la documentation officielle ](https://rocket.chat/docs/administrator-guides/integrations/) ) : 
 
