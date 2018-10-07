@@ -956,8 +956,11 @@ Toujours en une seule ligne, mais en mode verbeux :
 export PROVISIONING_HOME=$HOME/coquelicot && docker-compose down && cd $HOME && sudo rm -rf $PROVISIONING_HOME && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations-verbose.sh && ./operations-verbose.sh
 ```
 
-À la fin de l'exécution de cette recette, il faut encore : 
-* Aller, avec l'interface graphique web RocketChat, connecté avec un user RocketChat admin, ajouter, dans l'administration, un "Incoming Webhook", via le menu "Administration > Integrations"
+### À la fin de l'exécution de cette recette, pour lier hubot et rocketchat
+
+Que vous ayez exécuté cette recette pour la première fois, ou qu'il s'agisse d'une des exécutions idempotentes suivantes, une fois l'exécution terminée, il faut encore ( [dixit la documentation officielle ](https://rocket.chat/docs/administrator-guides/integrations/) ) : 
+
+* Avec l'interface graphique web RocketChat, connecté avec un user RocketChat admin, ajouter, dans la partie administration, un "Incoming Webhook", via le menu "Administration > Integrations"
 * Dans la configuration de cet "Incoming Webhook", ajouter le code javascript du incoming webhook suivant : 
 
 ```javascript
@@ -1189,62 +1192,8 @@ See: ${data.object_attributes.url}`
 ```
 
 
-## Cycle IAAC : Idempotence
 
-Lorsque vous aurez exécuté une première fois l'instruction en une ligne ci-dessus, vous pourrez faire un cycle IAAC, sans re-télécharger d'image extérieures, en reconstruisant toutes les images qui ne sont pas téléchargées, avec : 
-
-```bash
-export PROVISIONING_HOME=$(pwd) && docker-compose down && cd .. && sudo rm -rf $PROVISIONING_HOME && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations.sh && ./operations.sh
-``` 
-La commande ci-dessus, modulo la première exécution de cette recette exécutée, est idempotente
-
-
-
-
-
-
-
-
-
-
-
-### Mode plus léger
-
-L'ensemble de l'infrastructure commence à peser, et notamment, pour optimiser le cycle de tests, il est bon de remarquer que cette recette implique : 
-
-
-Les variables d'environnement ci-dessous doivent corrrespondre aux valeurs indiquées dans le `./.env`
-
-```
-# - Ces variables d'environnement ont des valeurs qui doivent corrrespondre aux 
-#   valeurs indiquées dans le `./.env`
-export VERSION_IMAGE_GITLAB_CE=11.2.1-ce.0
-export VERSION_IMAGE_GITLAB_CE_RUNNER=alpine-v11.2.0
-export VERSION_IMAGE_REDIS_DB=3-alpine
-export VERSION_IMAGE_POSTGRESSQL=9.6.8-alpine
-
-docker pull centos:7
-docker pull mongo:latest
-docker pull "gitlab/gitlab-ce:$VERSION_IMAGE_GITLAB_CE"
-docker pull "postgres:$VERSION_IMAGE_POSTGRESSQL"
-docker pull "redis:$VERSION_IMAGE_REDIS_DB"
-docker pull gitlab/gitlab-runner:$VERSION_IMAGE_GITLAB_CE_RUNNER
-docker pull rocketchat/rocket.chat:latest
-docker pull rocketchat/hubot-rocketchat:latest
-docker pull nginx:latest
-```
-C'est la liste des images téléchargées de l'extérieur.
-Il serait bon, pour la performance de votre cyle de tests, de ne télécharger qu'une seule t unique fois, à la première exécution dela recette.
-
-A chaque cycle, on pourra forcer la reconstruction build image docker locales, sans supprimezr les images déjà prêtes et téléchargées : 
-```bash
-docker-compose down && sudo rm -rf ./db && sudo rm -rf ./rocketchat/uploads/ && docker system prune -f &&  docker-compose up -d --build --force-recreate
-```
-
-Lorsque vous exécuterez ces commandes, vous serez guidé interactivement : 
-* La recette s'exécutera
-* Il vous sera demandé de crééer un utilisateur rocketchat, qui devra correspondre à celui spécifié dans le `./docker-compose.yml`, avec les deux variables d'environnement `ROCKETCHAT_USER` et `ROCKETCHAT_PASSWORD` (cf. définition du conteneur `hubot`)
-* Vous devrez de plus  : 
+Pour ce faire, vous devrez : 
   * créer un fichier de script javascript qui contiendra le code Javascript de votre "Incoming WebHook", adapté à ma version de RocketChat, en vertu de la documentation officielle https://rocket.chat/docs/administrator-guides/integrations/ ,
   * Créer dans RocketChat un "Webhook" de type "Incoming" ( Menu Administration > Intégrations > Create New Integration (bouton en haut à droite de la page) : 
   
@@ -1261,8 +1210,8 @@ Lorsque vous exécuterez ces commandes, vous serez guidé interactivement :
   * Ce webhook doit être configuré de manière à utiliser le script "Incoming Webhook" que vous avez écris : 
   ![Textfield Scripts Webhook Entrants RocketChat](https://github.com/Jean-Baptiste-Lasselle/coquelicot/raw/master/documentation/images/rocketchat-incoming-webhook-script.png)
   ![N'oubliez pas de sauvegarder ave les boutons Save de RocketChat](https://github.com/Jean-Baptiste-Lasselle/coquelicot/raw/master/documentation/images/rocketchat-incoming-webhook-menus-5-moyens-de-test-donnes-par-rocketchat.png)
-* Maintenant RocketChat correctmeent démarré, et le Webhook entrant créé et configuré, la recette puet se terminer : ELle va tout simplement redémarrer le `hubot` (cf. `./docker-compose.yml`). Il vous suffit de presser la touche entrée, pour laisser la recette se terminer.
-* La recette se termine, et vous pourrez constater la sortie log suivante (pour le conteneur `hubot`), et attestant du succès de la connexion du HUBOT dans le serveur RocketChat : 
+* Maintenant RocketChat Hubot sont intégrés
+* Vous pourrez constater la sortie log suivante (pour le conteneur `hubot`), et attestant du succès de la connexion du HUBOT dans le serveur RocketChat : 
 ```bash
 $ docker logs -f hubot
 ``` 
@@ -1293,237 +1242,47 @@ npm info ok
 Your hubot-scripts.json is empty, so you just need to remove it.
 ```
 
-Manques de ce repo Git : 
 
-*  Il reste à appliquer les instructions en fin de cette page, pour customiser les webhooks Gitlab. Pour ce faire, je vais donc utiliser l'inteface graphique web de rocketchat, pour aller à l'admin et créer un "incoming webhook", et ce en utilisant le script suivant : 
-```javascript
-/* eslint no-console:0, max-len:0 */
-// see https://gitlab.com/help/web_hooks/web_hooks for full json posted by GitLab
-const NOTIF_COLOR = '#6498CC';
-const refParser = (ref) => ref.replace(/^refs\/(?:tags|heads)\/(.+)$/, '$1');
-const displayName = (name) => name.toLowerCase().replace(/\s+/g, '.');
-const atName = (user) => (user && user.name ? '@' + displayName(user.name) : '');
-const makeAttachment = (author, text) => {
-	return {
-		author_name: author ? displayName(author.name) : '',
-		author_icon: author ? author.avatar_url : '',
-		text,
-		color: NOTIF_COLOR
-	};
-};
-const pushUniq = (array, val) => ~array.indexOf(val) || array.push(val); // eslint-disable-line
 
-class Script { // eslint-disable-line
-	process_incoming_request({ request }) {
-		try {
-			let result = null;
-			const channel = request.url.query.channel;
-			switch (request.headers['x-gitlab-event']) {
-				case 'Push Hook':
-					result = this.pushEvent(request.content);
-					break;
-				case 'Merge Request Hook':
-					result = this.mergeRequestEvent(request.content);
-					break;
-				case 'Note Hook':
-					result = this.commentEvent(request.content);
-					break;
-				case 'Issue Hook':
-					result = this.issueEvent(request.content);
-					break;
-				case 'Tag Push Hook':
-					result = this.tagEvent(request.content);
-					break;
-        case 'Pipeline Hook':
-					result = this.pipelineEvent(request.content);
-					break;
-			}
-			if (result && result.content && channel) {
-				result.content.channel = '#' + channel;
-			}
-			return result;
-		} catch (e) {
-			console.log('gitlabevent error', e);
-			return {
-				error: {
-					success: false,
-					message: e.message || e
-				}
-			};
-		}
-	}
 
-	issueEvent(data) {
-		return {
-			content: {
-				username: 'gitlab/' + data.project.name,
-				icon_url: data.project.avatar_url || data.user.avatar_url || '',
-				text: (data.assignee && data.assignee.name !== data.user.name) ? atName(data.assignee) : '',
-				attachments: [
-					makeAttachment(
-						data.user,
-						`, selon coquelicot-jbl, ${data.object_attributes.state} an issue _${data.object_attributes.title}_ on ${data.project.name}.
-*Description:* ${data.object_attributes.description}.
-See: ${data.object_attributes.url}`
-					)
-				]
-			}
-		};
-	}
 
-	commentEvent(data) {
-		const comment = data.object_attributes;
-		const user = data.user;
-		const at = [];
-		let text;
-		if (data.merge_request) {
-			const mr = data.merge_request;
-			const lastCommitAuthor = mr.last_commit && mr.last_commit.author;
-			if (mr.assignee && mr.assignee.name !== user.name) {
-				at.push(atName(mr.assignee));
-			}
-			if (lastCommitAuthor && lastCommitAuthor.name !== user.name) {
-				pushUniq(at, atName(lastCommitAuthor));
-			}
-			text = `coquelicot-jbl: commented on MR [#${mr.id} ${mr.title}](${comment.url})`;
-		} else if (data.commit) {
-			const commit = data.commit;
-			const message = commit.message.replace(/\n[^\s\S]+/, '...').replace(/\n$/, '');
-			if (commit.author && commit.author.name !== user.name) {
-				at.push(atName(commit.author));
-			}
-			text = `coquelicot-jbl: commented on commit [${commit.id.slice(0, 8)} ${message}](${comment.url})`;
-		} else if (data.issue) {
-			const issue = data.issue;
-			text = `coquelicot-jbl: commented on issue [#${issue.id} ${issue.title}](${comment.url})`;
-		} else if (data.snippet) {
-			const snippet = data.snippet;
-			text = `coquelicot-jbl: commented on code snippet [#${snippet.id} ${snippet.title}](${comment.url})`;
-		}
-		return {
-			content: {
-				username: 'gitlab/' + data.project.name,
-				icon_url: data.project.avatar_url || user.avatar_url || '',
-				text: at.join(' '),
-				attachments: [
-					makeAttachment(user, `${text}\n${comment.note}`)
-				]
-			}
-		};
-	}
 
-	mergeRequestEvent(data) {
-		const user = data.user;
-		const mr = data.object_attributes;
-		const assignee = mr.assignee;
-		let at = [];
 
-		if (mr.action === 'open' && assignee) {
-			at = '\n' + atName(assignee);
-		} else if (mr.action === 'merge') {
-			const lastCommitAuthor = mr.last_commit && mr.last_commit.author;
-			if (assignee && assignee.name !== user.name) {
-				at.push(atName(assignee));
-			}
-			if (lastCommitAuthor && lastCommitAuthor.name !== user.name) {
-				pushUniq(at, atName(lastCommitAuthor));
-			}
-		}
-		return {
-			content: {
-				username: `gitlab/${mr.target.name}`,
-				icon_url: mr.target.avatar_url || mr.source.avatar_url || user.avatar_url || '',
-				text: at.join(' '),
-				attachments: [
-					makeAttachment(user, `${mr.action} MR [#${mr.iid} ${mr.title}](${mr.url})\n${mr.source_branch} into ${mr.target_branch}`)
-				]
-			}
-		};
-	}
 
-	pushEvent(data) {
-		const project = data.project;
-		const user = {
-			name: data.user_name,
-			avatar_url: data.user_avatar
-		};
-		// branch removal
-		if (data.checkout_sha === null && !data.commits.length) {
-			return {
-				content: {
-					username: `gitlab/${project.name}`,
-					icon_url: project.avatar_url || data.user_avatar || '',
-					attachments: [
-						makeAttachment(user, `removed branch ${refParser(data.ref)} from [${project.name}](${project.web_url})`)
-					]
-				}
-			};
-		}
-		// new branch
-		if (data.before == 0) { // eslint-disable-line
-			return {
-				content: {
-					username: `gitlab/${project.name}`,
-					icon_url: project.avatar_url || data.user_avatar || '',
-					attachments: [
-						makeAttachment(user, `pushed new branch [${refParser(data.ref)}](${project.web_url}/commits/${refParser(data.ref)}) to [${project.name}](${project.web_url}), which is ${data.total_commits_count} commits ahead of master`)
-					]
-				}
-			};
-		}
-		return {
-			content: {
-				username: `gitlab/${project.name}`,
-				icon_url: project.avatar_url || data.user_avatar || '',
-				attachments: [
-					makeAttachment(user, `, selon coquelicot-jbl,  a poussé (pushed) ${data.total_commits_count} commits to branch [${refParser(data.ref)}](${project.web_url}/commits/${refParser(data.ref)}) in [${project.name}](${project.web_url})`),
-					{
-						text: data.commits.map((commit) => `  - ${new Date(commit.timestamp).toUTCString()} [${commit.id.slice(0, 8)}](${commit.url}) by ${commit.author.name}: ${commit.message.replace(/\s*$/, '')}`).join('\n'),
-						color: NOTIF_COLOR
-					}
-				]
-			}
-		};
-	}
+### Mode plus léger
 
-	tagEvent(data) {
-		const tag = refParser(data.ref);
-		return {
-			content: {
-				username: `gitlab/${data.project.name}`,
-				icon_url: data.project.avatar_url || data.user_avatar || '',
-				text: '@all',
-				attachments: [
-					makeAttachment(
-						{ name: data.user_name, avatar_url: data.user_avatar },
-						`push tag [${tag} ${data.checkout_sha.slice(0, 8)}](${data.project.web_url}/tags/${tag})`
-					)
-				]
-			}
-		};
-	}
+L'ensemble de l'infrastructure commence à peser, et notamment, pour optimiser le cycle de tests, il est bon de remarquer que cette recette implique une série d'images docker qui peuvent être téléchargées à l'aide du script ` coquelicot/initialisation-iaac-cible-deploiement.sh`.
 
-  pipelineEvent(data) {
-		const status = data.object_attributes.status;
-		const link = data.project.web_url
 
-		return {
-			content: {
-				username: `gitlab/${data.project.name}`,
-				icon_url: data.project.avatar_url || data.user.avatar_url || '',
-				text: 'Pipeline Active:',
-				attachments: [
-					makeAttachment(
-						{ name: data.user.name, avatar_url: data.user.avatar_url },
-						`, selon coquelicot-jb, Runned a Pipeline with status: ${data.object_attributes.status} [${data.object_attributes.duration}s] (${data.project.web_url}/pipelines)`
-					)
-				]
-			}
-		};
-	}
-}
+Les variables d'environnement ci-dessous doivent corrrespondre aux valeurs indiquées dans le `./.env`
+
 ```
-Qui est une simple petite modification du script donné en fin de cette documentation. Cette modification permet de définir des messages particuliers qui seront rapidement reconnaissables, quand postés par le `hubot`, dans RocketChat, suite à un évènement Gitlab.
+# - Ces variables d'environnement ont des valeurs qui doivent corrrespondre aux 
+#   valeurs indiquées dans le `./.env`
+export VERSION_IMAGE_GITLAB_CE=11.2.1-ce.0
+export VERSION_IMAGE_GITLAB_CE_RUNNER=alpine-v11.2.0
+export VERSION_IMAGE_REDIS_DB=3-alpine
+export VERSION_IMAGE_POSTGRESSQL=9.6.8-alpine
+
+docker pull centos:7
+docker pull mongo:latest
+docker pull "gitlab/gitlab-ce:$VERSION_IMAGE_GITLAB_CE"
+docker pull "postgres:$VERSION_IMAGE_POSTGRESSQL"
+docker pull "redis:$VERSION_IMAGE_REDIS_DB"
+docker pull gitlab/gitlab-runner:$VERSION_IMAGE_GITLAB_CE_RUNNER
+docker pull rocketchat/rocket.chat:latest
+docker pull rocketchat/hubot-rocketchat:latest
+docker pull nginx:latest
+```
+C'est la liste des images téléchargées de l'extérieur.
+Il serait bon, pour la performance de votre cyle de tests, de ne télécharger qu'une seule t unique fois, à la première exécution de la recette.
+
+A chaque cycle, on pourra forcer la reconstruction build image docker locales, sans supprimer les images déjà prêtes et téléchargées, à l'aode de l'option `--force-recreate` : 
+```bash
+docker-compose down && docker system prune -f &&  docker-compose up -d --build --force-recreate
+```
+
+
 
 ## Architecture et orchestration des opérations de déploiement & exploit
 
