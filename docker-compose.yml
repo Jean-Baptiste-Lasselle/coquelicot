@@ -41,8 +41,10 @@ services:
         # - HEALTHCHECK BUILD ENV. => devrait être dans un conteneur Père, dont celui ci hérite, avec les BUILD ARGS déjà fixés.
         # Les variables globales de nom identique, sont définies dans le fichier ".env", propre à Docker Compose
         - VERSION_IMAGE_GITLAB_CE=$GITLAB_CE_VERSION
+        - GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB=$GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB
     environment:
       - TZ=${TZ}
+      - VERSION_IMAGE_GITLAB_CE=$GITLAB_CE_VERSION
       - GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB=$GITLAB_HTTP_PORT_VIA_NGINX_INTERNE_GITLAB
       # Ces varibles sont utilisées par les fonctionnalités développées par léquipe Gitlab 
       # - pour la partie serveur SSH, je laisse les valeurs par défaut s'appliquer
