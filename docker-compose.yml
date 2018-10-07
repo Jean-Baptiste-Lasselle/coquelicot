@@ -195,8 +195,8 @@ services:
     volumes:
       - ./rocketchat/uploads:/app/uploads:rw
     environment:
-      - PORT=3000
-      - ROOT_URL=http://rocketchat.marguerite.io:3000
+      - PORT=$NUMERO_PORT_ECOUTE_ROCKETCHAT
+      - ROOT_URL=http://rocketchat.marguerite.io:$NUMERO_PORT_ECOUTE_REVERSE_PROXY
       - MONGO_URL=mongodb://mongo:27017/rocketchat
       - MONGO_OPLOG_URL=mongodb://mongo:27017/local?replicaSet=rs0
       - MAIL_URL=smtp://smtp.google.com
@@ -204,9 +204,9 @@ services:
       - ADMIN_PASS=$MDP_UTILISATEUR_ADMIN_INITIAL
       - ADMIN_EMAIL=$EMAIL_UTILISATEUR_ADMIN_INITIAL
     ports:
-      - 3030:3000
+      - 3030:$NUMERO_PORT_ECOUTE_ROCKETCHAT
     expose:
-      - "3000"
+      - "$NUMERO_PORT_ECOUTE_ROCKETCHAT"
     depends_on:
       - mongo
       # + Depuis utilisation d'un build image custom mongo avec HEALTHCHECK pour le
@@ -322,7 +322,7 @@ services:
       - ./nginx/logs:/var/log/nginx:rw
 #      - ./nginx/certificates:/etc/nginx/certificates/
     ports:
-      - "8090:8070"
+      - "$NUMERO_PORT_ECOUTE_REVERSE_PROXY:8070"
       - "7443:3443"
       - "3322:322"
     expose:
