@@ -943,7 +943,7 @@ gitlab_rails['lfs_enabled'] = true
 
 ##! **Override only if you use a reverse proxy**
 ##! Docs: https://docs.gitlab.com/omnibus/settings/nginx.html#setting-the-nginx-listen-port
-nginx['listen_port'] = 8085
+nginx['listen_port'] = 8089
 
 ##! **Override only if your reverse proxy internally communicates over HTTP**
 ##! Docs: https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl
