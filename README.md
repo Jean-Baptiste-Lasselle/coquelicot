@@ -915,7 +915,7 @@ Pour exécuter cette recette une première fois :
 
 ```bash
 export PROVISIONING_HOME=$HOME/coquelicot 
-docker-compse down 
+docker-compose down 
 cd $HOME 
 sudo rm -rf $PROVISIONING_HOME 
 mkdir -p $PROVISIONING_HOME 
@@ -926,7 +926,7 @@ chmod +x ./operations.sh && ./operations.sh
 Soit, en une seule ligne : 
 
 ```bash
-export PROVISIONING_HOME=$HOME/coquelicot && docker-compse down && cd $HOME && sudo rm -rf $PROVISIONING_HOME && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations.sh && ./operations.sh
+export PROVISIONING_HOME=$HOME/coquelicot && docker-compose down && cd $HOME && sudo rm -rf $PROVISIONING_HOME && mkdir -p $PROVISIONING_HOME && cd $PROVISIONING_HOME && git clone "https://github.com/Jean-Baptiste-Lasselle/coquelicot" . && chmod +x ./operations.sh && ./operations.sh
 ```
 Toujours en une seule ligne, mais en mode verbeux : 
 
