@@ -14,10 +14,11 @@
 
 Le numéro de port SSH par lequel est accessible le conteneur Gitlab (cf. `./docker-compose.yml`), devrait être celui utilisé par un utilisateur Gitlab, pour faire les commits n push sur des repos Git. Ainsi, le port utilisé par ces utilisateurs, mentionné dans la commande `export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa -p 2222 ' `, où le numéro de prot SSH utilisé est `2222`.
 
-Voici le résultat d'un test de git clone commit and push, avec la connexion SSH Gitlab, et une paire asymétrique de clés RSA. Le tout fonctionne correctement : 
+Voici le résultat d'un test de git clone commit and push, avec la connexion SSH Gitlab, et une paire asymétrique de clés RSA. Le tout fonctionne correctement, et, sachant que le port SSH Gitlab est `2222` : 
 
 
 ```bash
+jibl@pc-alienware-jib:~/test-gitlab-client$ export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa -p 2222'
 jibl@pc-alienware-jib:~/test-gitlab-client$ git clone git@gitlab.marguerite.io:jibl/limoges.git
 Cloning into 'limoges'...
 The authenticity of host '[gitlab.marguerite.io]:2222 ([192.168.1.30]:2222)' can't be established.
