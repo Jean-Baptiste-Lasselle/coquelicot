@@ -289,8 +289,8 @@ services:
       # + que les "external scripts" sont des identifiants d'artefacts NODEJS / NPM : 
       # + On eput donc ajouter n'importe quel nom, du moement qu'il s'agit d'une dépendance existante dans
       # + le registry NPM du contexte de déploiement
-      # - EXTERNAL_SCRIPTS=hubot-pugme,hubot-help
-      - EXTERNAL_SCRIPTS=hubot-pugme,hubot-help,hubot-seen,hubot-links,hubot-diagnostics,hubot-rocketchat-gitlab
+      - EXTERNAL_SCRIPTS=hubot-pugme,hubot-help
+      # - EXTERNAL_SCRIPTS=hubot-pugme,hubot-help,hubot-seen,hubot-links,hubot-diagnostics,hubot-rocketchat-gitlab
 
 
 #     links:
