@@ -14,6 +14,58 @@
 
 Le numéro de port SSH par lequel est accessible le conteneur Gitlab (cf. `./docker-compose.yml`), devrait être celui utilisé par un utilisateur Gitlab, pour faire les commits n push sur des repos Git. Ainsi, le port utilisé par ces utilisateurs, mentionné dans la commande `export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa -p 2222 ' `, où le numéro de prot SSH utilisé est `2222`.
 
+Voici le résultat d'un test de git clone commit and push, avec la connexion SSH Gitlab, et une paire asymétrique de clés RSA. Le tout fonctionne correctement : 
+
+
+```bash
+jibl@pc-alienware-jib:~/test-gitlab-client$ git clone git@gitlab.marguerite.io:jibl/limoges.git
+Cloning into 'limoges'...
+The authenticity of host '[gitlab.marguerite.io]:2222 ([192.168.1.30]:2222)' can't be established.
+ECDSA key fingerprint is SHA256:zvYjVXrhjycL4hOXHSnqXgoQHDgnYmidcJKgVmitpOI.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '[gitlab.marguerite.io]:2222' (ECDSA) to the list of known hosts.
+warning: You appear to have cloned an empty repository.
+jibl@pc-alienware-jib:~/test-gitlab-client$ vi nouveau-fichier-test-connexion-ssh-utilisateurs-gitlab.kytes
+jibl@pc-alienware-jib:~/test-gitlab-client$ git add ./nouveau-fichier-test-connexion-ssh-utilisateurs-gitlab.kytes 
+fatal: Not a git repository (or any of the parent directories): .git
+jibl@pc-alienware-jib:~/test-gitlab-client$ ls -all
+total 16
+drwxr-xr-x  3 jibl jibl 4096 Oct 11 16:05 .
+drwxr-xr-x 35 jibl jibl 4096 Oct 11 16:01 ..
+drwxr-xr-x  3 jibl jibl 4096 Oct 11 16:01 limoges
+-rw-r--r--  1 jibl jibl   94 Oct 11 16:05 nouveau-fichier-test-connexion-ssh-utilisateurs-gitlab.kytes
+jibl@pc-alienware-jib:~/test-gitlab-client$ mv ./nouveau-fichier-test-connexion-ssh-utilisateurs-gitlab.kytes  ./limoges/
+jibl@pc-alienware-jib:~/test-gitlab-client$ cd limoges/
+jibl@pc-alienware-jib:~/test-gitlab-client/limoges$ git add ./nouveau-fichier-test-connexion-ssh-utilisateurs-gitlab.kytes 
+jibl@pc-alienware-jib:~/test-gitlab-client/limoges$ git commit -m "commit de test du canal SSH vers Gitlab"
+[master (root-commit) 554ba2d] commit de test du canal SSH vers Gitlab
+ 1 file changed, 2 insertions(+)
+ create mode 100644 nouveau-fichier-test-connexion-ssh-utilisateurs-gitlab.kytes
+jibl@pc-alienware-jib:~/test-gitlab-client/limoges$ git tag -a 1.0.0 -m "CEci est l'équivalent d'une release, pour test du canal SSH Gitlab"
+jibl@pc-alienware-jib:~/test-gitlab-client/limoges$ git push && git push --tags
+No refs in common and none specified; doing nothing.
+Perhaps you should specify a branch such as 'master'.
+fatal: The remote end hung up unexpectedly
+error: failed to push some refs to 'git@gitlab.marguerite.io:jibl/limoges.git'
+jibl@pc-alienware-jib:~/test-gitlab-client/limoges$ git push -u origin master && git push --tags -u origin master
+Counting objects: 3, done.
+Delta compression using up to 12 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 356 bytes | 0 bytes/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To gitlab.marguerite.io:jibl/limoges.git
+ * [new branch]      master -> master
+Branch master set up to track remote branch master from origin.
+Counting objects: 1, done.
+Writing objects: 100% (1/1), 200 bytes | 0 bytes/s, done.
+Total 1 (delta 0), reused 0 (delta 0)
+To gitlab.marguerite.io:jibl/limoges.git
+ * [new tag]         1.0.0 -> 1.0.0
+Branch master set up to track remote branch master from origin.
+jibl@pc-alienware-jib:~/test-gitlab-client/limoges$ 
+```
+
+
 Et voici le résultat d'une petite expérience de connexion SSH avec un client SSH debian : 
 
 ```bash
