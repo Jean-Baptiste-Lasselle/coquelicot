@@ -12,9 +12,9 @@
 
 ### Connexion SSH gitlab
 
-Le numéro de port SSH par lequel est accessible le conteneur Gitlab (cf. `./docker-compose.yml`), devrait être celui utilisé par un utilisateur Gitlab, pour faire les commits n push sur des repos Git. Ainsi, le port utilisé par ces utilisateurs, mentionné dans la commande `export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa -p 2222 ' `, où le numéro de prot SSH utilisé est `2222`.
 
-Voici le résultat d'un test de git clone commit and push, avec la connexion SSH Gitlab, et une paire asymétrique de clés RSA. Le tout fonctionne correctement, et, sachant que le port SSH Gitlab est `2222` : 
+
+Voici le résultat d'un test de git clone commit and push, avec la connexion SSH Gitlab, et une paire asymétrique de clés RSA. Le tout fonctionne correctement, et, sachant que le port SSH Gitlab est `2222`, etr que le port HTTP par lequel le conteneur Gitlab est accessible, est le port `8090` : 
 
 
 ```bash
@@ -66,6 +66,7 @@ Branch master set up to track remote branch master from origin.
 jibl@pc-alienware-jib:~/test-gitlab-client/limoges$ 
 ```
 
+Le numéro de port SSH par lequel est accessible le conteneur Gitlab (cf. `./docker-compose.yml`), devrait être celui utilisé par un utilisateur Gitlab, pour faire les commits n push sur des repos Git. Ainsi, le port utilisé par ces utilisateurs, mentionné dans la commande `export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa -p 2222 ' `, où le numéro de poort SSH utilisé est `2222`.
 
 Et voici le résultat d'une petite expérience de connexion SSH avec un client SSH debian : 
 
