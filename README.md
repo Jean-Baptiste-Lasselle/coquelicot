@@ -10,6 +10,88 @@
 
 # Reprise
 
+### Dépendances Hubot: Une erreur à analyser
+
+L'un des scripts chargeables par le Hubot, spécifié dans le `./docker-compose.yml` par la variable d'environnement `EXTERNAL_SCRIPTS`, provoque un errer à l'exécution. Ce script est le script `hubot-rocketchat-gitlab`.
+C'est donc l'intégration conçue par l'équipe RocketChat, qui est en cause: C'est bien elle qui développe, maintient, et distribue ce script.
+
+
+Voici le `docker logs` du conteneur hubot dans lequel j'ai repéré cette erreur : 
+
+```bash
+npm info preinstall hubot-rocketchat-gitlab@0.0.4
+npm info linkStuff hubot-rocketchat-gitlab@0.0.4
+npm WARN prefer global hubot-rocketchat-gitlab@0.0.4 should be installed with -g
+npm info install hubot-rocketchat-gitlab@0.0.4
+npm info postinstall hubot-rocketchat-gitlab@0.0.4
+npm info build /home/hubot/node_modules/hubot-seen
+npm info preinstall hubot-seen@1.0.1
+npm info linkStuff hubot-seen@1.0.1
+npm info install hubot-seen@1.0.1
+npm info postinstall hubot-seen@1.0.1
+npm info install rocketbot@0.0.0
+npm info postinstall rocketbot@0.0.0
+npm info prepublish rocketbot@0.0.0
+npm info ok 
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Starting Rocketchat adapter version 1.0.11...
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Once connected to rooms I will respond to the name: bozinsky
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO I will also respond to my Rocket.Chat username as an alias: yoomabot
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Connecting To: rocketchat:3000
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Successfully connected!
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO 
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Logging In
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Successfully Logged In
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO rid:  []
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO All rooms joined.
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Preparing Meteor Subscriptions..
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Subscribing to Room: __my_messages__
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Successfully subscribed to messages
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] INFO Setting up reactive message list...
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] WARNING Expected /home/hubot/scripts/package to assign a function to module.exports, got object
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] WARNING Loading scripts from hubot-scripts.json is deprecated and will be removed in 3.0 (https://github.com/github/hubot-scripts/issues/1113) in favor of packages for each script.
+
+Your hubot-scripts.json is empty, so you just need to remove it.
+[Thu Oct 11 2018 14:24:36 GMT+0000 (UTC)] ERROR Unable to load /home/hubot/node_modules/hubot-rocketchat-gitlab/lib/gitlab: SyntaxError: Block-scoped declarations (let, const, function, class) not yet supported outside strict mode
+    at exports.runInThisContext (vm.js:53:16)
+    at Module._compile (module.js:373:25)
+    at Object.Module._extensions..js (module.js:416:10)
+    at Module.load (/home/hubot/node_modules/coffee-script/lib/coffee-script/register.js:45:36)
+    at Function.Module._load (module.js:300:12)
+    at Module.require (module.js:353:17)
+    at require (internal/module.js:12:17)
+    at Object.<anonymous> (/home/hubot/node_modules/hubot-rocketchat-gitlab/node_modules/gitlab/node_modules/debug/src/index.js:9:19)
+    at Module._compile (module.js:409:26)
+    at Object.Module._extensions..js (module.js:416:10)
+    at Module.load (/home/hubot/node_modules/coffee-script/lib/coffee-script/register.js:45:36)
+    at Function.Module._load (module.js:300:12)
+    at Module.require (module.js:353:17)
+    at require (internal/module.js:12:17)
+    at Object.<anonymous> (/home/hubot/node_modules/hubot-rocketchat-gitlab/node_modules/gitlab/lib/ApiV3.js:7:11)
+    at Object.<anonymous> (/home/hubot/node_modules/hubot-rocketchat-gitlab/node_modules/gitlab/lib/ApiV3.js:29:4)
+    at Module._compile (module.js:409:26)
+    at Object.Module._extensions..js (module.js:416:10)
+    at Module.load (/home/hubot/node_modules/coffee-script/lib/coffee-script/register.js:45:36)
+    at Function.Module._load (module.js:300:12)
+    at Module.require (module.js:353:17)
+    at require (internal/module.js:12:17)
+    at Object.<anonymous> (/home/hubot/node_modules/hubot-rocketchat-gitlab/node_modules/gitlab/lib/index.js:4:11)
+    at Object.<anonymous> (/home/hubot/node_modules/hubot-rocketchat-gitlab/node_modules/gitlab/lib/index.js:12:4)
+    at Module._compile (module.js:409:26)
+    at Object.Module._extensions..js (module.js:416:10)
+    at Module.load (/home/hubot/node_modules/coffee-script/lib/coffee-script/register.js:45:36)
+    at Function.Module._load (module.js:300:12)
+    at Module.require (module.js:353:17)
+    at require (internal/module.js:12:17)
+    at module.exports (/home/hubot/node_modules/hubot-rocketchat-gitlab/lib/gitlab.js:30:15)
+    at Robot.loadFile (/home/hubot/node_modules/hubot/src/robot.coffee:358:11)
+    at Robot.load (/home/hubot/node_modules/hubot/src/robot.coffee:377:10)
+    at module.exports (/home/hubot/node_modules/hubot-rocketchat-gitlab/index.coffee:5:9)
+    at Robot.loadExternalScripts (/home/hubot/node_modules/hubot/src/robot.coffee:401:11)
+    at /home/hubot/node_modules/hubot/bin/hubot:159:26
+    at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:380:3)
+```
+
+
 ### Connexion SSH gitlab
 
 
