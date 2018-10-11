@@ -14,7 +14,7 @@
 
 
 
-Voici le résultat d'un test de git clone commit and push, avec la connexion SSH Gitlab, et une paire asymétrique de clés RSA. Le tout fonctionne correctement, et, sachant que le port SSH Gitlab est `2222`, etr que le port HTTP par lequel le conteneur Gitlab est accessible, est le port `8090` : 
+Voici le résultat d'un test de git clone commit and push, avec la connexion SSH Gitlab, et une paire asymétrique de clés RSA. Le tout fonctionne correctement, et, sachant que le port SSH Gitlab est `2222`, et que le port HTTP par lequel le conteneur Gitlab est accessible, est le port `8090` : 
 
 
 ```bash
