@@ -10,7 +10,27 @@
 
 # Reprise
 
-En l'état :
+### Connexion SSH gitlab
+
+Le numéro de port SSH par lequel est accessible le conteneur Gitlab (cf. `./docker-compose.yml`), devrait être celui utilisé par un utilisateur Gitlab, pour faire les commits n push sur des repos Git. Ainsi, le port utilisé par ces utilisateurs, mentionné dans la commande `export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa -p 2222 ' `, où le numéro de prot SSH utilisé est `2222`.
+
+Et voici le résultat d'une petite expérience de connexion SSH avec un client SSH debian : 
+
+```bash
+jibl@pc-alienware-jib:~/test-gitlab-client$ ssh -i /home/jibl/.ssh/id_rsa -p 2222 root@192.168.1.30
+The authenticity of host '[192.168.1.30]:2222 ([192.168.1.30]:2222)' can't be established.
+ECDSA key fingerprint is SHA256:zvYjVXrhjycL4hOXHSnqXgoQHDgnYmidcJKgVmitpOI.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '[192.168.1.30]:2222' (ECDSA) to the list of known hosts.
+Permission denied (publickey).
+jibl@pc-alienware-jib:~/test-gitlab-client$ ssh -i /home/jibl/.ssh/id_rsa -p 2222 gitlab@192.168.1.30
+Permission denied (publickey).
+jibl@pc-alienware-jib:~/test-gitlab-client$ ssh -i /home/jibl/.ssh/id_rsa -p 2222 jibl@192.168.1.30
+Permission denied (publickey).
+jibl@pc-alienware-jib:~/test-gitlab-client$ 
+```
+
+### En l'état 
 
 * premier fait : si je change juste le numéro de port dans le proxypass déclaré dans `./nginx/chatops.conf` pour Gitlab, que je le change de `8085` à la valeur `80`, eh bien tout fonctionne correctement avec Gitlab. Comment configure-t-on le numéro de prot d'écoute du NGINX, je n'(en ai aucune idée, à moinsque j'ai un problème d'interpolation de varibles dans mon `./docker-compose.yml`. 
 * second fait : j'ai beau tout essayer, les "pré-"configurations OMNIBUS ne focntionnent en aucun cas, j'ai donc eut recours au fichier `gitlab.rb`, 
