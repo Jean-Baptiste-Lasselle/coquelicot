@@ -1,6 +1,8 @@
 
 # Virutal box env
 `sudo dpkg -i /homle/ops-vault.local/kytes/virtualbox-5.2_5.2.20-125813~Debian~stretch_amd64.deb`
+
+![libc-ncurses-example]()
  
 # A ranger
 
